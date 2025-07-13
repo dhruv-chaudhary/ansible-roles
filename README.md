@@ -1,20 +1,16 @@
 # Ansible Roles Collection
 
-This project contains a collection of Ansible roles that perform commonly used tasks for server management and automation. These roles are designed to be reusable, well-documented, and follow Ansible best practices.
-
-## Overview
-
 This repository provides a set of modular Ansible roles that can be used individually or combined to automate various server management tasks. Each role is self-contained and follows the standard Ansible role structure.
 
 ## Available Roles
 
 ### Docker Management
 
-- **install-docker**: Installs Docker and Docker Compose
+- **install_docker**: Installs Docker and Docker Compose
 
 ### System Administration
 
-- **update-server**: Handles system updates, package management, and security patches
+- **update_server**: Handles system updates, package management, and security patches
 
 ## Prerequisites
 
@@ -43,8 +39,8 @@ Each role can be used independently in your playbooks:
 - hosts: servers
   become: yes
   roles:
-    - update-server
-    - install-docker
+    - update_server
+    - install_docker
 ```
 
 ### Example Playbooks
@@ -57,8 +53,8 @@ Each role can be used independently in your playbooks:
   hosts: webservers
   become: yes
   roles:
-    - update-server
-    - install-docker
+    - update_server
+    - install_docker
 ```
 
 ## Role Configuration
@@ -70,12 +66,12 @@ Each role includes default variables that can be overridden in your playbook or 
 ```
 ansible-roles/
 ├── roles/
-│   ├── install-docker/
+│   ├── install_docker/
 │   │   ├── defaults/
 │   │   ├── handlers/
 │   │   ├── tasks/
 │   │   └── vars/
-│   ├── update-server/
+│   ├── update_server/
 │   └── ...
 └── README.md
 ```
