@@ -1,0 +1,71 @@
+- name: Ensure nginx directory exists
+  file:
+    path: /opt/nginx
+    state: directory
+    mode: "0755"
+
+- name: Ensure nginx conf.d directory exists
+  file:
+    path: /opt/nginx/conf.d
+    state: directory
+    mode: "0755"
+
+- name: Create SSL certificates directory
+  file:
+    path: /opt/nginx/certs
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Copy SSL certificate
+  copy:
+    src: "ssl/fullchain.pem.vault"
+    dest: /opt/nginx/certs/fullchain.pem
+    mode: "0644"
+    owner: root
+    group: root
+
+- name: Copy SSL private key
+  copy:
+    src: "ssl/privkey.pem.vault"
+    dest: /opt/nginx/certs/privkey.pem
+    mode: "0600"
+    owner: root
+    group: root
+
+- name: Copy main nginx configuration file
+  copy:
+    src: nginx.conf
+    dest: /opt/nginx/nginx.conf
+    mode: "0644"
+
+- name: Deploy Nginx virtual host configs
+  template:
+    src: nginx-vhost.conf.j2
+    dest: "/opt/nginx/conf.d/{{ item.server_name }}.conf"
+  loop: "{{ nginx_sites }}"
+  # notify: Reload Nginx
+
+- name: Deploy HTTP-to-HTTPS redirect
+  template:
+    src: nginx-redirect.conf.j2
+    dest: /opt/nginx/conf.d/redirect.conf
+  # notify: Reload Nginx
+
+- name: Create nginx container
+  community.docker.docker_container:
+    name: nginx
+    image: nginx:stable-alpine
+    state: started
+    restart: true
+    restart_policy: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /opt/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/nginx/conf.d:/etc/nginx/conf.d:ro
+      - /opt/nginx/certs:/etc/nginx/certs:ro
+    networks:
+      - name: "{{ docker_network }}"

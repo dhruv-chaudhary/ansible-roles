@@ -1,0 +1,19 @@
+# SSH keys
+*.pem
+*.key
+*.ppk
+id_*
+
+# Environment-specific files
+inventories/*/group_vars/all/vault.yml
+inventories/*/host_vars/*/vault.yml
+
+# Local configuration
+.env
+.env.*
+.vault_pass.txt
+
+/inventories
+/playbooks
+ssl/
+ansible.cfg

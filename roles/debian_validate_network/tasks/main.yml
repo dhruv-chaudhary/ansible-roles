@@ -1,0 +1,15 @@
+---
+# Tasks for checking internet connectivity on Debian servers
+
+- name: Check DNS resolution
+  ansible.builtin.command: ping -c 1 google.com
+  register: dns_check
+  changed_when: false
+
+- name: Check HTTP connectivity
+  ansible.builtin.uri:
+    url: http://www.debian.org
+    method: GET
+    status_code: 200
+  register: http_check
+  changed_when: false

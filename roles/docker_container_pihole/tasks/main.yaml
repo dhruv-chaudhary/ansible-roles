@@ -1,0 +1,19 @@
+- name: Create pihole container
+  community.docker.docker_container:
+    name: pihole
+    image: pihole/pihole:2025.08.0
+    state: started
+    restart: true
+    restart_policy: unless-stopped
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - pihole:/etc/pihole
+    networks:
+      - name: "{{ docker_network }}"
+    env:
+      TZ: "Asia/Kolkata"
+      FTLCONF_webserver_api_password: "{{ pihole_web_pass }}"
+      FTLCONF_dns_listeningMode: "all"
+      FTLCONF_webserver_port: "8080"

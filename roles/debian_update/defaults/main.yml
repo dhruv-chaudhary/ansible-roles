@@ -1,0 +1,11 @@
+---
+# Default variables for debian_update role
+
+# Whether to automatically reboot if required
+auto_reboot: true
+
+# Timeout settings for reboot
+reboot_timeout: 300
+reboot_connect_timeout: 5
+reboot_pre_delay: 0
+reboot_post_delay: 30

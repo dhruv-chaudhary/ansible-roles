@@ -1,0 +1,8 @@
+server {
+    listen 80;
+    server_name {% for site in nginx_sites %}{{ site.server_name }} {% endfor %};
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
