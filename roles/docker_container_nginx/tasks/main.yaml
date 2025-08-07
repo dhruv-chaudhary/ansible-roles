@@ -58,7 +58,6 @@
     name: nginx
     image: nginx:stable-alpine
     state: started
-    restart: true
     restart_policy: unless-stopped
     ports:
       - "80:80"

@@ -3,7 +3,6 @@
     name: pihole
     image: pihole/pihole:2025.08.0
     state: started
-    restart: true
     restart_policy: unless-stopped
     ports:
       - "53:53/tcp"
