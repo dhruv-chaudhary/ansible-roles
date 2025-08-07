@@ -3,7 +3,6 @@
     name: mongo
     image: mongo:8.0
     state: started
-    restart: true
     restart_policy: unless-stopped
     ports:
       - "27017:27017"
