@@ -1,0 +1,43 @@
+- name: Check that downloads folder is mounted
+  command: "mountpoint {{ downloads_dir }}"
+  register: mount_check
+  ignore_errors: yes
+  changed_when: false
+
+- name: Assert downloads folder is a mounted SMB share
+  assert:
+    that:
+      - mount_check.rc == 0
+    fail_msg: "{{ downloads_dir }} is not mounted. SMB mount likely failed. Aborting."
+
+- name: Create gluetun container
+  community.docker.docker_container:
+    name: gluetun
+    image: qmcgaw/gluetun:latest
+    state: started
+    restart_policy: unless-stopped
+    capabilities:
+      - NET_ADMIN
+    ports:
+      - "127.0.0.1:9091:9091"
+    env:
+      VPN_SERVICE_PROVIDER: protonvpn
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: "{{ wireguard_private_key }}"
+      SERVER_COUNTRIES: Switzerland
+    networks:
+      - name: "{{ docker_network }}"
+
+- name: Create transmission container
+  community.docker.docker_container:
+    name: tm
+    image: linuxserver/transmission:latest
+    state: started
+    restart_policy: no
+    env:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: "Asia/Kolkata"
+    network_mode: "container:gluetun"
+    volumes:
+      - "{{ downloads_dir }}:/downloads"
