@@ -1,0 +1,28 @@
+- name: Install cifs-utils package
+  apt:
+    name: cifs-utils
+    state: present
+    update_cache: yes
+
+- name: Create mount point directory
+  file:
+    path: "{{ smb_mount_point }}"
+    state: directory
+
+- name: Create SMB credentials file
+  copy:
+    content: |
+      username={{ smb_username }}
+      password={{ smb_password }}
+    dest: /root/.smbcredentials
+    mode: "0600"
+    owner: root
+    group: root
+
+- name: Mount SMB share
+  mount:
+    path: "{{ smb_mount_point }}"
+    src: "{{ smb_share_path }}"
+    fstype: cifs
+    opts: "credentials=/root/.smbcredentials,uid=1000,gid=1000,vers=3.1.1,nofail,iocharset=utf8,file_mode={{ smb_file_mode }},dir_mode={{ smb_dir_mode }}"
+    state: mounted
